@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  app_container:
+    image: radiagulzan/feature_1_image:latest
+    container_name: app_container
+    build: 
+      context: ./
+      args:
+        DATABASE_URI: ${DATABASE_URI}
+    deploy: 
+      replicas: 3
+    ports:
+    - target: 5001
+      published: 5001
+      protocol: tcp
+
+  nginx_container:
+    image: nginx:latest
+    container_name: nginx_container
+    ports:
+    - target: 80
+      published: 80
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: ./nginx/nginx.conf
+      target: /etc/nginx/nginx.conf
