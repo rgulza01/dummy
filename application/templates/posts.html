@@ -1,0 +1,21 @@
+{%extends "base.html"%}
+{%block body%}
+   <br>
+   <h1 style="color:teal;">Our gluten free community's blog posts</h1>
+   <br>
+ 
+   {%for p in posts_for_html%}
+   <div class="shadow p-3 mb-5 bg-body rounded">
+       <h2>{{p.title }} <br></h2>
+       <h6 style="color:darkcyan;"> By: {{p.author }} <br></h6>
+       <small>
+           {{p.date_posted }} <br><br>
+       </small>
+       {{p.content }} <br><br>
+       <a href="{{url_for('apost',id=p.id)}}" class="btn btn-outline-secondary btn-sm">View Post</a>
+       <a href="{{url_for('deletepost', id=p.id)}}" class="btn btn-outline-danger btn-sm">Delete</a>
+ 
+    </div>
+   {%endfor%}
+ 
+{%endblock body%}

@@ -38,7 +38,7 @@
                   <a class="nav-link active" aria-current="page" href="{{ url_for('dashboard')}}" style=" background-color:rgb(0, 75, 93); color:whitesmoke;">View All User</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" style=" background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('addnewuser')}}">Add New User</a>
+                  <a class="nav-link" style=" background-color:rgb(0, 75, 93); color:whitesmoke;" href="{{ url_for('addnewpost')}}">Add New Post</a>
                 </li>
               </ul>
 
@@ -79,7 +79,7 @@
                 </pre> -->
                 <!-- i need a html and css grid  -->
                 {%for u in list_users_in_html%}
-                <p>&emsp;&emsp; {{u.id}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; <a href="#">{{u.name}}</a> &emsp;&emsp;&emsp;&emsp;&emsp;{{u.email}} &emsp;&emsp;<a href="{{url_for('update', id = u.id)}}"> <button type="submit" class="btn text-light m-3" style="background-color:rgb(0, 75, 93);">Update</button>&emsp;&emsp;&emsp;&emsp;<a href="{{url_for('delete', id = u.id)}}"><button type="submit" class="btn text-light m-3" style="background-color:rgb(0, 75, 93);">Delete</button></p></a>
+                <p>&emsp;&emsp; {{u.id}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; {{u.name}} &emsp;&emsp;&emsp;&emsp;&emsp;{{u.email}} &emsp;&emsp;&emsp;&emsp;<a href="{{url_for('update', id = u.id)}}"> <button type="submit" class="btn text-light m-3" style="background-color:rgb(0, 75, 93);">Update</button>&emsp;&emsp;&emsp;&emsp;<a href="{{url_for('delete', id = u.id)}}"><button type="submit" class="btn text-light m-3" style="background-color:rgb(0, 75, 93);">Delete</button></p></a>
                 {%endfor%}
               </div>
         </div>

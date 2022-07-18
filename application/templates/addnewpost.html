@@ -1,0 +1,78 @@
+{%extends "base.html"%}
+{% from "showlinks.html" import show_links, showsocialmedialinks %}
+{%block body%}
+
+<div class="parent">
+    <div class="child child1">
+        <h1 class="text-center"><i>GF FLASK</i></h1>
+    </div>
+    <div class="child child3">
+      {{ show_links() }}
+  </div>
+  <div class="child child4">
+    <h3 class="m-2">ADD A NEW POST</h3>
+</div>
+  <br>
+  <br>
+<h1>Post any GF recipees, tips about the lifestyle or your GF stories!</h1>
+
+<div class="form">
+  <form method="POST", action="">
+      {{form.hidden_tag()}}
+      {{form.title_box.label(class="form-label")}}
+      {%if form.title_box.error%}
+          {{form.title_box(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+              {%for error in form.title_box.errors%}
+                  <span>{{error}}</span>
+              {%endfor%}
+          </div>
+      {%else%}
+          {{form.title_box(class="form-control")}}
+      {%endif%}
+      <br>
+
+      {{form.content_box.label(class="form-label")}}
+      {%if form.content_box.error%}
+          {{form.content_box(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+              {%for error in form.content_box.errors%}
+                  <span>{{error}}</span>
+              {%endfor%}
+          </div>
+      {%else%}
+          {{form.content_box(class="form-control", rows = 10)}}
+      {%endif%}
+      <br>
+
+      {{form.author_box.label(class="form-label")}}
+      {%if form.author_box.error%}
+          {{form.author_box(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+              {%for error in form.author_box.errors%}
+                  <span>{{error}}</span>
+              {%endfor%}
+          </div>
+      {%else%}
+          {{form.author_box(class="form-control")}}
+      {%endif%}
+      <br>
+
+      {{form.slug_box.label(class="form-label")}}
+      {%if form.slug_box.error%}
+          {{form.slug_box(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+              {%for error in form.slug_box.errors%}
+                  <span>{{error}}</span>
+              {%endfor%}
+          </div>
+      {%else%}
+          {{form.slug_box(class="form-control")}}
+      {%endif%}
+      <br>
+
+      {{form.submit_button(class="btn btn-primary")}}
+  </form> 
+</div>
+
+{%endblock body%}

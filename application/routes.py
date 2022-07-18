@@ -1,7 +1,7 @@
 import email
-from flask import Flask, url_for, render_template, redirect, request, flash
+from flask import Flask, session, url_for, render_template, redirect, request, flash
 from application import app, db
-from application.models import UserForm, UserFormUpdate, User
+from application.models import Post, UserForm, UserFormUpdate, User, PostForm
 
 
 '''
@@ -40,23 +40,6 @@ def dashboard():
 	return render_template('dashboard.html', list_users_in_html=list_users)
 
 
-# @app.route("/update/<int:id>", methods=["POST", "GET"])
-# def update(id): #id passed from URL
-# 	form = UserForm()
-# 	user_to_update = User.query.get_or_404(id)
-# 	#to verify if someone went to the page
-# 	if request.method == 'POST':
-# 		user_to_update.name = request.form['name_box']
-# 		user_to_update.email = request.form['email_box']
-# 		try:
-# 			db.session.commit()
-# 			flash(f'User updated successfully!', 'success')
-# 			return("update.html..?")
-# 		except:
-			 	
-# 	return render_template('login.html')
-
-
 @app.route("/update/<int:id>", methods=["POST", "GET"])
 def update(id):
 	form = UserFormUpdate()
@@ -77,16 +60,66 @@ def update(id):
 	return render_template('update2.html', form = form)
 
 @app.route("/delete/<int:id>", methods=["POST", "GET"])
-def delete(id): #id passed from URL
-	deleted = User.query.get(id)
+def delete(id):
+	#checks if it's in the database first and if it is not it returns the custom 404 page
+	deleted = User.query.get_or_404(id)
 	db.session.delete(deleted)
 	db.session.commit()
 	return redirect(url_for('dashboard'))
 
-# I will change this into add new post instead 
-@app.route("/addnewuser")
-def addnewuser():
-	return render_template('addnewuser.html')
+
+@app.route("/addnewpost", methods=['GET', 'POST'])
+def addnewpost():
+	form = PostForm()
+	if form.validate_on_submit():
+		#query to retrieve the user
+		userToFind = User.query.filter_by(name=form.author_box.data).first()
+		post = Post(title=form.title_box.data, content=form.content_box.data, author=form.author_box.data, slug=form.slug_box.data, user=userToFind)
+		if db.session.query(User.id).filter_by(name=post.author).first() is None:
+			flash(f"You're not signed up with us! Sign up first to submit any posts", 'error')
+			return redirect(request.referrer)
+		else:
+			db.session.add(post)
+			db.session.commit()
+			flash(f'Post submitted successfully!', 'success')	
+			return redirect(request.referrer)
+		
+	return render_template('addnewpost.html', form = form)
+
+@app.route("/posts")
+def posts():
+	"""
+	#with error_parameter as in posts(error_parameter), displaying all posts from the database if they exist
+    rows = Post.query.count()
+    if rows == 0:
+        return render_template('404ForNoPostsYet'), 404
+    else:
+        posts=Post.query.order_by(Post.date_posted)
+        return render_template('posts.html', posts_for_html=posts)
+	"""
+	posts=Post.query.order_by(Post.date_posted)
+	return render_template('posts.html', posts_for_html=posts)
+
+@app.route("/posts/delete/<int:id>", methods=["POST", "GET"])
+def deletepost(id): 
+	#checks if it's in the database first and if it is not it returns the custom 404 page
+	deleted = Post.query.get_or_404(id)
+	try:
+		db.session.delete(deleted)
+		db.session.commit()
+		flash(f'Post deleted successfully!', 'success')	
+		posts=Post.query.order_by(Post.date_posted)
+		return render_template('posts.html', posts_for_html=posts)
+	except:
+		flash(f'Oops! There was a problem deleting the post. Try again later', 'error')	
+		posts=Post.query.order_by(Post.date_posted)
+		return render_template('posts.html', posts_for_html=posts)
+
+@app.errorhandler(404)
+@app.route("/posts/<int:id>")
+def apost(id):
+	post=Post.query.get_or_404(id)
+	return render_template('apost.html', post_for_html=post)
 
 @app.route("/singleuser")
 def singleuserprofile():
@@ -104,6 +137,7 @@ def logout():
 @app.errorhandler(404)
 def pageNotFound(error_parameter):
     return render_template('404.html'), 404
+
 
 @app.errorhandler(500)
 def serverError(error_parameter):

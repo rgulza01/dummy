@@ -5,8 +5,11 @@ services:
     container_name: app_container
     build: 
       context: ./
-      args:
-        DATABASE_URI: ${DATABASE_URI}
+      # args:
+        # DATABASE_URI: ${DATABASE_URI}
+    environment:
+      DATABASE_URI: ${DATABASE_URI}
+      SECRET_KEY: ${SECRET_KEY}
     deploy: 
       replicas: 3
     ports:
@@ -18,8 +21,8 @@ services:
     image: nginx:latest
     container_name: nginx_container
     ports:
-    - target: 81
-      published: 81
+    - target: 80
+      published: 80
       protocol: tcp
     volumes:
     - type: bind
